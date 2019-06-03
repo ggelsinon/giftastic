@@ -10,23 +10,23 @@ $(document).ready(function () {
     var buttonID = "";
 
 
-    
 
-// function to create the buttons
+
+    // function to create the buttons
     function createButtons() {
         $("#buttons-html").empty();
-// loop through the buttons array creating buttons with the needed attributes to get things showing up on the page
+        // loop through the buttons array creating buttons with the needed attributes to get things showing up on the page
         for (var i = 0; i < sports.length; i++) {
             var btn = $("<button type='button' class='btn btn-info'>");
             btn.addClass("buttons");
             btn.attr("id", "item" + (i + 1));
             btn.attr("data-name", sports[i]);
             btn.text(sports[i]);
-//
+            //
             if (buttonID === btn.attr("id")) {
                 btn.addClass("btn-info");
             }
-// display button on the page
+            // display button on the page
             $("#buttons-html").append(btn);
         }
     }
@@ -44,57 +44,58 @@ $(document).ready(function () {
 
     //need click vent to make the giphys when buttons are clicked
 
-    $(document).on("click", "buttons", function(){
+    $(document).on("click", "buttons", function () {
         buttonID = $(this).attr("id");
 
-        for (var i =0; i < sports.length; i++) {
+        for (var i = 0; i < sports.length; i++) {
             $("#buttons-html").children().eq(i).removeClass("btn-success");
         }
         $(this).addClass("btn-success");
 
         var sport = $(this).attr("data-name");
 
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=10";
-        
-// ajax call to connect with giphy api and pull data on to page
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=5";
+
+        // ajax call to connect with giphy api and pull data on to page
+
+        // this section is not working
         $.ajax({
             url: queryURL,
             method: "GET"
 
-        }).done(function(response){
+        }).then(function (response) {
             $("#sports-html").empty();
 
-            var data = response.data;
-            var div = "";
-            var img = "";
+            for (var i = 0; i < 5; i++) {
+                var sportDiv = $("<div class='sport-img'>"); // create a new div for the giphy
+                var rating = data.data[i].rating;
+                var ratingDisplay = $("#<h2>").text("Rating: " + rating);
+                var gifDisplay = $("<img>");
+                gifDisplay.attr("src", data.data[i].images.fixed_height_still.url);
+                gifDisplay.attr("data-still", data[i].images.fixed_height.still.url);
+                gifDisplay.attr("data-animate", data[i].images.fixed_height.url);
+            };
 
-            for(var i = 0; i < data.length; i++){
-                div = $("<div class='sport-img'>");
-                div.append("<h2>Rated: " + data[i].rating + "</h2>");
-                img = $("<img class='giphy' data-state='still'>"); // on initial load the giphys are supposed to be still need to add a click event for them to animate
-                img.attr({
-                    "src": data[i].images.fixed_height_still.url,
-                    "data-still": data[i].images.fixed_height.still.url,
-                    "data-animate": data[i].images.fixed_height.url
-                });
-                div.append(img);
-                $("#sports-html").append(div);
-            }
+
+            sportDiv.append(gifDisplay);
+            sportDiv.append(ratingDisplay);
+            $("#sports-html").append(sportDiv);
         });
+    })
 
-    });
-// on click event to change from still to animate and back
-    $(document).on("click", "giphy",function(){
+
+    // on click event to change from still to animate and back
+    $(document).on("click", function () {
         var state = $(this).attr("data-state");
 
         if (state === "still") {
             $(this).attr("src", $(this).attr("data-animate"));
-			$(this).attr("data-state", "animate");
+            $(this).attr("data-state", "animate");
 
-		}
-		else {
-			$(this).attr("src", $(this).attr("data-still"));
-			$(this).attr("data-state", "still");
+        }
+        else {
+            $(this).attr("src", $(this).attr("data-still"));
+            $(this).attr("data-state", "still");
         }
     });
 
