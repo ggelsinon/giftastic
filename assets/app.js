@@ -14,11 +14,11 @@ $(document).ready(function () {
 
 // function to create the buttons
     function createButtons() {
-        $("#sports-html").empty();
+        $("#buttons-html").empty();
 // loop through the buttons array creating buttons with the needed attributes to get things showing up on the page
         for (var i = 0; i < sports.length; i++) {
             var btn = $("<button type='button' class='btn btn-info'>");
-            btn.addClass("sport-button");
+            btn.addClass("buttons");
             btn.attr("id", "item" + (i + 1));
             btn.attr("data-name", sports[i]);
             btn.text(sports[i]);
@@ -44,7 +44,7 @@ $(document).ready(function () {
 
     //need click vent to make the giphys when buttons are clicked
 
-    $(document).on("click", "sport-button", function(){
+    $(document).on("click", "buttons", function(){
         buttonID = $(this).attr("id");
 
         for (var i =0; i < sports.length; i++) {
@@ -62,23 +62,23 @@ $(document).ready(function () {
             method: "GET"
 
         }).done(function(response){
-            $("#sport-html").empty();
+            $("#sports-html").empty();
 
             var data = response.data;
-            var div;
-            var img;
+            var div = "";
+            var img = "";
 
             for(var i = 0; i < data.length; i++){
                 div = $("<div class='sport-img'>");
                 div.append("<h2>Rated: " + data[i].rating + "</h2>");
-                img = $("img class='giphy' data-state='still'"); // on initial load the giphys are supposed to be still need to add a click event for them to animate
+                img = $("<img class='giphy' data-state='still'>"); // on initial load the giphys are supposed to be still need to add a click event for them to animate
                 img.attr({
                     "src": data[i].images.fixed_height_still.url,
                     "data-still": data[i].images.fixed_height.still.url,
                     "data-animate": data[i].images.fixed_height.url
                 });
                 div.append(img);
-                $("#sport-html").append(div);
+                $("#sports-html").append(div);
             }
         });
 
