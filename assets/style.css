@@ -1,0 +1,10 @@
+.sport-img {
+    float:left;
+    padding: 0 10px 25px 10px;
+}
+
+.clearfix::after {
+	content: "";
+	display: block;
+	clear: both;
+}
