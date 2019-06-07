@@ -2,8 +2,8 @@ $(document).ready(function () {
 
     // variables
     // var to get the api data
-    var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=5");
-    xhr.done(function (data) { console.log("success got data", data); });
+    var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=10");
+    xhr.done(function (data) { console.log("api key is working", data); });
     // array for the buttons
     var sports = ["curling", "hockey", "baseball", "volleyball", "tennis", "rollerderby", "snowbaording"]
     // button id to add more
@@ -44,17 +44,12 @@ $(document).ready(function () {
 
     //need click vent to make the giphys when buttons are clicked
 
-    $(document).on("click", "buttons", function () {
+    $(document).on("click", ".buttons", function () {
         buttonID = $(this).attr("id");
-
-        for (var i = 0; i < sports.length; i++) {
-            $("#buttons-html").children().eq(i).removeClass("btn-success");
-        }
-        $(this).addClass("btn-success");
 
         var sport = $(this).attr("data-name");
 
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=5";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=dXsHsqNh4L9eb2FvQGxgPwJ4zGKNKxUr&limit=10";
 
         // ajax call to connect with giphy api and pull data on to page
 
@@ -66,26 +61,32 @@ $(document).ready(function () {
         }).then(function (response) {
             $("#sports-html").empty();
 
-            for (var i = 0; i < 5; i++) {
-                var sportDiv = $("<div class='sport-img'>"); // create a new div for the giphy
-                var rating = data.data[i].rating;
-                var ratingDisplay = $("#<h2>").text("Rating: " + rating);
+            for (var i = 0; i < 10; i++) {
+                var sportDiv = $("<div>"); // create a new div for the giphy
+                sportDiv.addClass('sport-img');
+                var rating = response.data[i].rating;
+                var ratingDisplay = $("<h2>").text("Rating: " + rating);
                 var gifDisplay = $("<img>");
-                gifDisplay.attr("src", data.data[i].images.fixed_height_still.url);
-                gifDisplay.attr("data-still", data[i].images.fixed_height.still.url);
-                gifDisplay.attr("data-animate", data[i].images.fixed_height.url);
+                gifDisplay.attr("src", response.data[i].images.fixed_height_still.url);
+                gifDisplay.attr("data-still", response.data[i].images.fixed_height_still.url);
+                gifDisplay.attr("data-animate", response.data[i].images.fixed_height.url);
+                gifDisplay.attr("data-state", "still");
+                gifDisplay.addClass('imageClick');
+                console.log(gifDisplay);
+                sportDiv.append(gifDisplay);
+                sportDiv.append(ratingDisplay);
+                $(".sports-html").prepend(sportDiv);        
+           
             };
+            console.log(response)
 
 
-            sportDiv.append(gifDisplay);
-            sportDiv.append(ratingDisplay);
-            $("#sports-html").append(sportDiv);
         });
     })
 
 
     // on click event to change from still to animate and back
-    $(document).on("click", function () {
+    $(document).on("click", ".imageClick", function () {
         var state = $(this).attr("data-state");
 
         if (state === "still") {
